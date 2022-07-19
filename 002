@@ -1,0 +1,58 @@
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int year; //연도 입력
+int month=0, dday;
+int k=1;
+int ch(int year) { //윤년 판별 윤년일 경우 2월의 일을 29일까지
+	if ((year % 4 == 0 && year % 100 != 0) || (year / 400 == 0))//윤년일 경우
+		return 29;
+	else //평년일 경우
+		return 28;
+}
+int last_day(int year, int month) { //마지막 날을 출력
+	int day[12] = { 31, ch(year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; //2월의 값을 함수로 받기
+	return day[month - 1];
+}
+int ed(int y,int m, int d) { //지금까지의 모든 날의 수
+	int sum = (y - 1) * 365 + (y - 1) / 4 - (y - 1) / 100 + (y - 1) / 400;
+	for (int i = 1; i < m; i++) {
+		sum += last_day(y,i);
+	}
+	return sum+d; 
+}
+int tab(int y, int m, int d) { //요일 리턴
+	return ed(y, m, d) % 7;
+}
+void cal() { //꾸미는 부분
+	cout << "\t\t" << "==========" << endl;
+	cout << "============================================" << endl;
+	cout << setw(5)<<"sun  mon  tue  wed  thu  fri  sat" << endl;
+	cout << "============================================" << endl;
+}
+
+int main()
+{
+	cout << "연도를 입력하세요(0을 입력하면 종료) : ";
+	cin >> year;
+	if (year != 0) {
+		for (int i = 1; i < 13; i++) {
+			cout << "\t\t" << year << "년" << k++ << "월" << endl;
+			cal();
+			for (int j = 1; j < last_day(year, i); j++) { //첫줄 공백
+				for (int k = 0; k <= tab(year, i, 1); k++) {
+					cout <<"    ";
+				}
+				for (int k = 0; k <= 6 - tab(year, i, 1); k++) { //첫줄 날짜 출력
+					cout <<setw(5)<<k+1;	
+				}
+
+				cout << endl;
+			}
+		}
+	}
+	else //0입력시 종료
+		exit;
+}
