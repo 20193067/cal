@@ -1,0 +1,47 @@
+#include <iostream>
+using namespace std;
+int ch(int year) { //윤년 판별 윤년일 경우 2월의 일을 29일까지
+	if ((year % 4 == 0 && year % 100 != 0) || (year / 400 == 0))//윤년일 경우
+		return 29;
+	else //평년일 경우
+		return 28;
+}
+void cal() { //꾸미는 부분
+	cout << "\t\t" << "==========" << endl;
+	cout << "=====================================================" << endl;
+	cout << "sun\tmon\ttue\twed\tthu\tfri\tsat" << endl;
+	cout << "=====================================================" << endl;
+}
+int ed(int y) { //지금까지의 모든 날의 수
+	int sum = 0;
+	sum = (y - 1) * 365 + (y - 1) / 4 - (y - 1) / 100 + (y - 1) / 400;
+	return sum % 7; //여기서 출력되는 값이 1월 1일 요일(0:월, 6:일)
+}
+int main()
+{
+	int year; //연도 입력
+	int k=1;
+	cout << "연도를 입력하세요(0을 입력하면 종료) : ";
+	cin >> year;
+	int day[12] = { 31, ch(year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; //2월의 값을 함수로 받기
+
+	if (year != 0) { 
+		for (int i = 0; i <= 11; i++) { //달
+			cout << endl;
+			cout << "\t\t" << year << "년" << k << "월" << endl;
+			k++;
+			cal();
+			for (int j = 1; j <= day[i]; j++) { //일
+				
+				cout <<j << "\t";
+				if (j % 7==0) { //주단위 줄바꿈
+					cout << endl;
+				}
+				
+			}
+			cout << endl;
+		}
+	}
+	else //0입력시 종료
+		exit;
+}
