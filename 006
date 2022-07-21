@@ -1,0 +1,166 @@
+#include <iostream>
+#include <iomanip>
+#include <windows.h>
+using namespace std;
+
+class calendar {//클래스 선언부
+public:
+	int year; //사용자로부터 년도 입력받는 변수
+	int a,b,c;
+	int month;
+	calendar() { //생성자
+		year = 0; //생성시 year 초기화
+	}
+	int ch(int year); //윤년임을 판별
+	int last_day(int year, int month);//달의 마지막 일
+	int ed(int y, int m, int d); //입력한 값의 모든 수
+	int tab(int y, int m, int d); //공백
+	void cal(); //달력 출력 부분
+	void print(); //일 출력 부분
+	void color(int forg, int back); //주말 글자 색 변경 부분
+};
+int calendar::ch(int year) { //윤년 판별 및 마지막 일 반환
+	if ((year % 4 == 0 && year % 100 != 0) || (year / 400 == 0))//윤년일 경우
+		return 29;
+	else //평년일 경우
+		return 28;
+}
+int calendar::last_day(int year, int month) { //마지막 날을 출력
+	int day[12] = { 31, ch(year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }; //2월의 값을 받아오기
+	return day[month - 1];//해당 달에 대한 마지막날 반환
+}
+int calendar::ed(int y, int m, int d) { //지금까지의 모든 날의 수
+	int sum = (y - 1) * 365 + (y - 1) / 4 - (y - 1) / 100 + (y - 1) / 400; //2020년에 대한 일수를 구하기 위해서 저번 달에 대한 년도와 달을 구해야함.
+	for (int i = 1; i < m; i++) {
+		sum += last_day(y, i); //달에 대한 모든 합
+	}
+	return sum + d; //년도와 마지막 날을 모두 더한다.
+}
+int calendar::tab(int y, int m, int d) { //요일 리턴
+	return ed(y, m, d) % 7; //일요일이면 값은 7이지만, 나머지가 0, 월요일은 1이고, 값도 1, 
+}
+void calendar::color(int forg, int back) { //글자색상 변경
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	int color = forg + back * 16;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
+void calendar::cal() { //꾸미는 부분
+	cout << "=======================================" <<"\t\t\t" << "=======================================" << "\t\t\t\t" << "=======================================" << endl;
+	color(4, 0); //일요일 글자 색상을 red
+	cout << setw(5) << "  sun  ";
+	color(15, 0); //평일 글자 색상을 white
+	cout << "mon  tue  wed  thu  fri";
+	color(1, 0); // 토요일 글자 색상을 blue
+	cout << "  sat ";
+	color(15, 0); //이후 출력되는 글자의 색상을 white로 변경
+	cout << "\t\t\t";
+	color(4, 0); //일요일 글자 색상을 red
+	cout << setw(5) << "  sun  ";
+	color(15, 0); //평일 글자 색상을 white
+	cout << "mon  tue  wed  thu  fri";
+	color(1, 0); // 토요일 글자 색상을 blue
+	cout << "  sat ";
+	color(15, 0); //이후 출력되는 글자의 색상을 white로 변경
+	cout << "\t\t\t\t";
+	color(4, 0); //일요일 글자 색상을 red
+	cout << setw(5) << "  sun  ";
+	color(15, 0); //평일 글자 색상을 white
+	cout << "mon  tue  wed  thu  fri";
+	color(1, 0); // 토요일 글자 색상을 blue
+	cout << "  sat " << endl;
+	color(15, 0); //이후 출력되는 글자의 색상을 white로 변경
+	cout << "=======================================" << "\t\t\t" << "=======================================" << "\t\t\t\t" << "=======================================" << endl;
+}
+void calendar::print() { //일 출력하는 부분
+
+	for (int month = 1; month < 13; month = month +3) { //월
+		cout << endl;
+		cout << "\t      " << year << "년" << month << "월" << "\t\t\t\t\t                 " << year
+			<< "년" << month +1 << "월" << "\t\t\t\t\t                " << year << "년" << month +2 << "월"; //월 출력
+		cout << endl;
+		cout << "\t      " << "==========" << "\t\t\t\t                " << "==========" 
+			<< "\t\t\t\t\t                " << "=========="  << endl;
+		cal();
+
+
+		for (int k = 0; k < tab(year, month, 1); k++) {//첫줄 공백
+			cout << "     ";
+		}
+		for (int j = a; j < last_day(year, month) + 1; j++) {  //마지막날 까지 출력
+			if (tab(year, month, j) == 0) {  //tab의 값이 0(일요일)일 경우 
+				color(4, 0);//글자 색상을 red로 변경
+			}
+			else if (tab(year, month, j) == 6) { //tab의 값이 6(토요일)일 경우 
+				color(1, 0); //글자 색상을 blue로 변경
+				a = j; //1월의 첫번째 토요일 저장
+			}
+			else
+				color(15, 0); //이외의 값은 글자 색상을 white로 진행
+			cout << setw(5) << j; //일의 간격을 조정하기 위한 setw 사용하여 문자간의 간격 조정
+
+
+			if (tab(year, month, j) == 6) { //여기서 teb의 값이 6일인 토요일에 도달하게 되면
+				cout << "\t\t\t          ";
+				//다음달 출력으로 넘어가고
+				for (int k = 0; k < tab(year, month+1, 1); k++) {//첫줄 공백
+					cout << "     ";
+					for (int j = b; j < last_day(year, month) + 1; j++) {  //마지막날 까지 출력
+						if (tab(year, month+1, j) == 0) {  //tab의 값이 0(일요일)일 경우 
+							color(4, 0);//글자 색상을 red로 변경
+						}
+						else if (tab(year, month+1, j) == 6) { //tab의 값이 6(토요일)일 경우 
+							color(1, 0); //글자 색상을 blue로 변경
+							b = j; //2월의 첫번째 토요일 저장
+						}
+						else
+							color(15, 0); //이외의 값은 글자 색상을 white로 진행
+						cout << setw(5) << j; //일의 간격을 조정하기 위한 setw 사용하여 문자간의 간격 조정
+						if (tab(year, month+1, j) == 6) { //여기서 teb의 값이 6일인 토요일에 도달하게 되면
+							cout << "\t\t\t\t         ";
+							//다음달 출력으로 넘어가고
+							for (int k = 0; k < tab(year, month + 2, 1); k++) {//첫줄 공백
+								cout << "     ";
+								for (int j = c; j < last_day(year, month) + 1; j++) {  //마지막날 까지 출력
+									if (tab(year, month+2, j) == 0) {  //tab의 값이 0(일요일)일 경우 
+										color(4, 0);//글자 색상을 red로 변경
+									}
+									else if (tab(year, month + 2, j) == 6) { //tab의 값이 6(토요일)일 경우 
+										color(1, 0); //글자 색상을 blue로 변경
+										c = j; //2월의 첫번째 토요일 저장
+									}
+									else
+										color(15, 0); //이외의 값은 글자 색상을 white로 진행
+									cout << setw(5) << j; //일의 간격을 조정하기 위한 setw 사용하여 문자간의 간격 조정
+									if (tab(year, month + 1, j) == 6) { //여기서 teb의 값이 6일인 토요일에 도달하게 되면
+										cout << "\t\t\t\t         ";
+										cout << endl; //줄바꿈 하고
+										int ta = tab(year, month, j); //요일에 대한 값을 초기화
+										ta = 0; //초기화
+									}
+								}
+
+							}
+
+						}
+					}
+				}
+			}
+		}
+		cout << endl;
+		color(15, 0);
+	}
+	cout << endl;
+}
+
+int main()
+{
+	system(" mode  con lines=50   cols=200 ");
+	calendar a; //생성자 호출로 자동 초기화
+	while (true) {
+		cout << "연도를 입력하세요(0을 입력하면 종료) : ";
+		cin >> a.year; //연도 입력 
+		if (a.year == 0) //입력된 값이 0일 경우 
+			break; //while문 종료
+		a.print(); //아닐 경우 출력
+	}
+}
