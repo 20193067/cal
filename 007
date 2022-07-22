@@ -1,0 +1,265 @@
+#include <iostream>
+using namespace std;
+int gettotaldates(int year, int month);
+void line(int week);
+int daym(int month, int year);
+int main(){
+
+    int year, month, i, j, k, dday, week = 0;
+    int dday2, dday3;
+    int week2, week3;
+    int next_day_1st_col, next_day_2nd_col, next_day_3rd_col;
+    bool first_print;
+    printf("년도를입력해주세요: ");
+    cin >> year;
+
+    for (month = 1; month < 13; month = month + 3) {
+
+        if (year > 0) {
+            cout <<"\t"<<year << "년" << month << "월""\t\t"<< year << "년" << month + 1 << "월" << "\t\t" << year << "년" << month + 2 << "월" << endl;
+            cout << "\t" << "===========" << "\t\t" << "===========" << "\t\t" << "===========" << endl;
+            cout<<" 일 월 화 수 목 금 토     일 월 화 수 목 금 토     일 월 화 수 목 금 토"<<endl;
+
+            dday = daym(month, year);
+            dday2 = daym(month + 1, year); //lastsay
+            dday3 = daym(month + 2, year);
+            week = gettotaldates(year, month) % 7; //tab
+            week2 = gettotaldates(year, month + 1) % 7;
+            week3 = gettotaldates(year, month + 2) % 7; //이게 나한테는 tab이겠지
+
+            next_day_1st_col = 1;
+            next_day_2nd_col = 1;
+            next_day_3rd_col = 1;
+            first_print = true;
+
+            for (i = 0; i < 5; i++) {
+
+                // 달마다처음출력하는거라면line함수에서그달에해당하는적잘한공백을출력
+
+                if (first_print)
+
+                    line(week);
+
+                // j는현재저장된출력값에서출력시작
+
+                for (j = next_day_1st_col; j <= dday; j++) {
+
+                    printf("%3d", j);
+
+                    k = j + week;
+
+                    if (k % 7 == 0)
+
+                    {
+
+                        // 어디까지출력했는지저장
+
+                        next_day_1st_col = j + 1;
+
+                        printf("   ");
+
+                        break;
+
+                    }
+
+                }
+
+                // 만약해당하는달에서마지막날짜를출력했다면다음달의날짜와적절한공백을출력
+
+                j--;
+
+                if (j == dday)
+
+                {
+
+                    // 7 - (마지막날짜- 마지막으로저장된날짜) 만큼의공백을출력
+
+                    for (k = 0; k < (7 - (dday - next_day_1st_col)); k++)
+
+                        printf("   ");
+
+                }
+
+
+
+                // 이하똑같은과정을반복
+
+                if (first_print)
+
+                    line(week2);
+
+                for (j = next_day_2nd_col; j <= dday2; j++) {
+
+                    printf("%3d", j);
+
+                    k = j + week2;
+
+                    if (k % 7 == 0)
+
+                    {
+
+                        next_day_2nd_col = j + 1;
+
+                        printf("   ");
+
+                        break;
+
+                    }
+
+                }
+
+                j--;
+
+                if (j == dday2)
+
+                {
+
+                    for (k = 0; k < (7 - (dday2 - next_day_2nd_col)); k++)
+
+                        printf("   ");
+
+                }
+
+
+
+                if (first_print)
+
+                    line(week3);
+
+                for (j = next_day_3rd_col; j <= dday3; j++) {
+
+                    printf("%3d", j);
+
+                    k = j + week3;
+
+                    if (k % 7 == 0)
+
+                    {
+
+                        next_day_3rd_col = j + 1;
+
+                        printf("   ");
+
+                        // 3번째열의출력을마치고first_print값을false로해서다음줄부터의공백출력을막습니다.
+
+                        first_print = false;
+
+                        break;
+
+                    }
+
+                }
+
+                printf("\n");
+
+            }
+
+        }
+
+        else {
+
+            printf("입력하신정보가잘못되었습니다.\n\n");
+
+            break;
+
+        }
+
+        printf("\n\n");
+
+    }
+
+    printf("\n");
+
+
+
+
+
+    return 0;
+
+}
+
+void line(int week)
+
+{
+
+    int i;
+
+
+
+    for (i = 0; i < week; i++)
+
+        printf("   ");
+
+} //공백 출력
+int gettotaldates(int year, int month)
+
+{
+
+    int i, total = 0;
+
+    int maxdaymonth[] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+
+
+
+    if ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0))
+
+        maxdaymonth[1]++;
+
+    for (i = 0; i < month - 1; i++)
+
+        total += maxdaymonth[i];
+
+    total += --year * 365 + year / 4 - year / 100 + year / 400 + 1;
+
+
+
+    return total;
+
+} //현재까지의 날
+
+int daym(int month, int year)
+
+{
+
+    int day;
+
+
+
+    switch (month) {
+
+    case 2:
+
+        if ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0))
+
+            day = 29;
+
+        else
+
+            day = 28;
+
+        break;
+
+    case 4: case 6: case 9: case 11:
+
+        day = 30;
+
+        break;
+
+    case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+
+        day = 31;
+
+        break;
+
+    default:
+
+        day = 1;
+
+    }
+
+
+
+    return day;
+
+}  //달의 max
+
