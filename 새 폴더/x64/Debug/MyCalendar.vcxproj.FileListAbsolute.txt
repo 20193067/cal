@@ -1,0 +1,6 @@
+C:\Users\wlghd\Desktop\Calendar\x64\Debug\MyCalendar.exe
+C:\Users\wlghd\Desktop\Calendar\x64\Debug\MyCalendar.pdb
+C:\Users\82108\source\repos\MyCalendar\x64\Debug\MyCalendar.exe
+C:\Users\82108\source\repos\MyCalendar\x64\Debug\MyCalendar.pdb
+C:\Users\wlghd\Desktop\MyCalendar\x64\Debug\MyCalendar.exe
+C:\Users\wlghd\Desktop\MyCalendar\x64\Debug\MyCalendar.pdb
